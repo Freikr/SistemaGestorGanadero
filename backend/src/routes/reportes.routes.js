@@ -4,30 +4,36 @@ const reportesController = require('../controllers/reportes.controller');
 
 router.get('/dashboard', reportesController.middleware, reportesController.dashboard);
 
-router.get('/animales', reportesController.middleware, reportesController.validaciones.animales, reportesController.reporteAnimales);
+router.get('/livestock', reportesController.middleware, reportesController.validaciones.animales, reportesController.reporteAnimales);
 
-router.get('/movimientos', reportesController.middleware, reportesController.validaciones.movimientos, reportesController.reporteMovimientos);
+router.get('/livestock-movements', reportesController.middleware, reportesController.validaciones.movimientos, reportesController.reporteMovimientos);
 
-router.get('/salud', reportesController.middleware, reportesController.validaciones.salud, reportesController.reporteSalud);
+router.get('/health', reportesController.middleware, reportesController.validaciones.salud, reportesController.reporteSalud);
 
-router.get('/ventas', reportesController.middleware, reportesController.validaciones.ventas, reportesController.reporteVentas);
+router.get('/vaccinations', reportesController.middleware, reportesController.validaciones.vacunas, reportesController.reporteVacunas);
 
-router.get('/inventario', reportesController.middleware, reportesController.reporteInventario);
+router.get('/sales', reportesController.middleware, reportesController.validaciones.ventas, reportesController.reporteVentas);
 
-router.get('/mortalidad', reportesController.middleware, reportesController.reporteMortalidad);
+router.get('/income', reportesController.middleware, reportesController.reporteIngresos);
 
-router.get('/por-raza', reportesController.middleware, reportesController.reportePorRaza);
+router.get('/inventory', reportesController.middleware, reportesController.reporteInventario);
 
-router.get('/por-finca', reportesController.middleware, reportesController.reportePorFinca);
+router.get('/mortality', reportesController.middleware, reportesController.validaciones.mortalidad, reportesController.reporteMortalidad);
 
-router.get('/reproduccion', reportesController.middleware, reportesController.validaciones.reproduccion, reportesController.reporteReproduccion);
+router.get('/herd-history', reportesController.middleware, reportesController.validaciones.poblacion, reportesController.reportePoblacion);
 
-router.get('/poblacion', reportesController.middleware, reportesController.reportePoblacion);
+router.get('/breeds', reportesController.middleware, reportesController.reportePorRaza);
 
-router.get('/exportar/pdf', reportesController.middleware, reportesController.exportarPDF);
+router.get('/farms', reportesController.middleware, reportesController.reportePorFinca);
 
-router.get('/exportar/excel', reportesController.middleware, reportesController.exportarExcel);
+router.get('/paddocks', reportesController.middleware, reportesController.reportePorPotrero);
 
-router.get('/exportar/csv', reportesController.middleware, reportesController.exportarCSV);
+router.get('/reproduction', reportesController.middleware, reportesController.validaciones.reproduccion, reportesController.reporteReproduccion);
+
+router.get('/export/pdf', reportesController.middleware, reportesController.exportarPDF);
+
+router.get('/export/excel', reportesController.middleware, reportesController.exportarExcel);
+
+router.get('/export/csv', reportesController.middleware, reportesController.exportarCSV);
 
 module.exports = router;
