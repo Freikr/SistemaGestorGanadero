@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes - Sistema Gestor Ganadero</title>
+  <link rel="stylesheet" href="css/reportes.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>SGG</h2>
+        <p>Reportes</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" data-reporte="dashboard" class="nav-item active">Dashboard</a>
+        <a href="#" data-reporte="animales" class="nav-item">Inventario Ganado</a>
+        <a href="#" data-reporte="movimientos" class="nav-item">Movimientos</a>
+        <a href="#" data-reporte="salud" class="nav-item">Salud</a>
+        <a href="#" data-reporte="ventas" class="nav-item">Ventas</a>
+        <a href="#" data-reporte="inventario" class="nav-item">Inventario Insumos</a>
+        <a href="#" data-reporte="mortalidad" class="nav-item">Mortalidad</a>
+        <a href="#" data-reporte="raza" class="nav-item">Por Raza</a>
+        <a href="#" data-reporte="finca" class="nav-item">Por Finca</a>
+        <a href="#" data-reporte="reproduccion" class="nav-item">Reproduccion</a>
+        <a href="#" data-reporte="poblacion" class="nav-item">Poblacion</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1 id="titulo-reporte">Dashboard de Reportes</h1>
+        <div class="topbar-actions">
+          <button id="btn-logout" class="btn btn-secondary">Cerrar Sesion</button>
+        </div>
+      </header>
+
+      <div class="filtros" id="filtros-container">
+        <div class="filtros-row">
+          <div class="form-group">
+            <label>Fecha Inicio</label>
+            <input type="date" id="fechaInicio" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Fecha Fin</label>
+            <input type="date" id="fechaFin" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Especie</label>
+            <select id="filtroEspecie" class="form-control">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Raza</label>
+            <select id="filtroRaza" class="form-control">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sexo</label>
+            <select id="filtroSexo" class="form-control">
+              <option value="">Todos</option>
+              <option value="MACHO">Macho</option>
+              <option value="HEMBRA">Hembra</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="filtroEstado" class="form-control">
+              <option value="">Todos</option>
+              <option value="ACTIVO">Activo</option>
+              <option value="VENDIDO">Vendido</option>
+              <option value="FALLECIDO">Fallecido</option>
+              <option value="EN_TRATAMIENTO">En Tratamiento</option>
+            </select>
+          </div>
+          <button id="btn-aplicar-filtros" class="btn btn-primary">Aplicar</button>
+          <button id="btn-limpiar-filtros" class="btn btn-secondary">Limpiar</button>
+        </div>
+      </div>
+
+      <div id="contenido-reporte">
+        <section id="seccion-dashboard" class="seccion-reporte active">
+          <div class="kpi-grid" id="kpi-dashboard"></div>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <canvas id="chart-distribucion-sexo"></canvas>
+            </div>
+            <div class="chart-card">
+              <canvas id="chart-ventas-mes"></canvas>
+            </div>
+            <div class="chart-card">
+              <canvas id="chart-distribucion-raza"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section id="seccion-animales" class="seccion-reporte">
+          <div class="kpi-grid" id="kpi-animales"></div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Inventario del Ganado</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="animales" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="animales" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="animales" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-animales">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Arete</th>
+                    <th>Nombre</th>
+                    <th>Sexo</th>
+                    <th>Especie</th>
+                    <th>Raza</th>
+                    <th>F. Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Estado</th>
+                    <th>Finca</th>
+                    <th>Potrero</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-animales"></div>
+          </div>
+        </section>
+
+        <section id="seccion-movimientos" class="seccion-reporte">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Movimientos del Ganado</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="movimientos" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="movimientos" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="movimientos" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-movimientos">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Animal</th>
+                    <th>Tipo</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Motivo</th>
+                    <th>Usuario</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-movimientos"></div>
+          </div>
+        </section>
+
+        <section id="seccion-salud" class="seccion-reporte">
+          <div class="kpi-grid" id="kpi-salud"></div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte Sanitario</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="salud" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="salud" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="salud" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-salud">
+                <thead>
+                  <tr>
+                    <th>Animal</th>
+                    <th>Vacuna/Tratamiento</th>
+                    <th>Fecha Aplicacion</th>
+                    <th>Proxima Dosis</th>
+                    <th>Dosis</th>
+                    <th>Observaciones</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-salud"></div>
+          </div>
+          <div class="alerta-card">
+            <h3>Vacunaciones Proximas</h3>
+            <div class="table-container">
+              <table class="data-table" id="tabla-vacunas-proximas">
+                <thead>
+                  <tr>
+                    <th>Animal</th>
+                    <th>Vacuna</th>
+                    <th>Proxima Dosis</th>
+                    <th>Finca</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="seccion-ventas" class="seccion-reporte">
+          <div class="kpi-grid" id="kpi-ventas"></div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte de Ventas</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="ventas" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="ventas" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="ventas" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-ventas">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Animal</th>
+                    <th>Raza</th>
+                    <th>Total</th>
+                    <th>Metodo Pago</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-ventas"></div>
+          </div>
+        </section>
+
+        <section id="seccion-inventario" class="seccion-reporte">
+          <div class="kpi-grid" id="kpi-inventario"></div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Inventario de Insumos</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="inventario" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="inventario" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="inventario" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-inventario">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Categoria</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Stock Minimo</th>
+                    <th>Estado</th>
+                    <th>Precio Compra</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="seccion-mortalidad" class="seccion-reporte">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte de Mortalidad</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="mortalidad" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="mortalidad" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="mortalidad" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-mortalidad">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Arete</th>
+                    <th>Nombre</th>
+                    <th>Sexo</th>
+                    <th>Raza</th>
+                    <th>Finca</th>
+                    <th>F. Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Observaciones</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-mortalidad"></div>
+          </div>
+        </section>
+
+        <section id="seccion-raza" class="seccion-reporte">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte por Raza</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="raza" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="raza" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="raza" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-raza">
+                <thead>
+                  <tr>
+                    <th>Raza</th>
+                    <th>Total</th>
+                    <th>Machos</th>
+                    <th>Hembras</th>
+                    <th>Activos</th>
+                    <th>Vendidos</th>
+                    <th>Fallecidos</th>
+                    <th>Edad Promedio</th>
+                    <th>Peso Promedio</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="seccion-finca" class="seccion-reporte">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte por Finca y Potrero</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="finca" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="finca" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="finca" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-finca">
+                <thead>
+                  <tr>
+                    <th>Finca</th>
+                    <th>Total Animales</th>
+                    <th>Machos</th>
+                    <th>Hembras</th>
+                    <th>Edad Promedio</th>
+                    <th>Ventas</th>
+                    <th>Fallecidos</th>
+                    <th>Potreros</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="seccion-reproduccion" class="seccion-reporte">
+          <div class="kpi-grid" id="kpi-reproduccion"></div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Reporte de Reproduccion</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="reproduccion" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="reproduccion" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="reproduccion" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-reproduccion">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Animal</th>
+                    <th>Tipo</th>
+                    <th>Resultado</th>
+                    <th>Observaciones</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination" id="paginacion-reproduccion"></div>
+          </div>
+        </section>
+
+        <section id="seccion-poblacion" class="seccion-reporte">
+          <div class="chart-card">
+            <canvas id="chart-poblacion"></canvas>
+          </div>
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Evolucion del Hato</h3>
+              <div class="export-buttons">
+                <button class="btn btn-sm btn-primary" data-export="poblacion" data-format="pdf">PDF</button>
+                <button class="btn btn-sm btn-primary" data-export="poblacion" data-format="excel">Excel</button>
+                <button class="btn btn-sm btn-primary" data-export="poblacion" data-format="csv">CSV</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="tabla-poblacion">
+                <thead>
+                  <tr>
+                    <th>Mes</th>
+                    <th>Poblacion Inicial</th>
+                    <th>Nacimientos</th>
+                    <th>Ventas</th>
+                    <th>Fallecimientos</th>
+                    <th>Traslados</th>
+                    <th>Poblacion Final</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="loading" class="loading-overlay" style="display:none;">
+    <div class="spinner"></div>
+  </div>
+
+  <div id="mensaje" class="mensaje-overlay" style="display:none;"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/reportes.js"></script>
+</body>
+</html>

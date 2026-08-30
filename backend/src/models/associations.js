@@ -39,6 +39,9 @@ function definirAsociaciones(models) {
 
   Potrero.hasMany(Movimiento, { foreignKey: 'potrero_destino_id', as: 'movimientos_entrada' });
   Potrero.hasMany(Movimiento, { foreignKey: 'potrero_origen_id', as: 'movimientos_salida' });
+  Movimiento.belongsTo(Potrero, { foreignKey: 'potrero_destino_id', as: 'potrero_destino' });
+  Movimiento.belongsTo(Potrero, { foreignKey: 'potrero_origen_id', as: 'potrero_origen' });
+  Movimiento.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
 
   Vacuna.hasMany(AplicacionVacuna, { foreignKey: 'vacuna_id', as: 'aplicaciones' });
   AplicacionVacuna.belongsTo(Vacuna, { foreignKey: 'vacuna_id', as: 'vacuna' });
